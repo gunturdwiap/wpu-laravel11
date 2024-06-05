@@ -5,8 +5,11 @@ use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+// namespace App\Http\Middleware;
+
 
 Route::get('/', function () {
     return view('home', ['title' => 'Home page']);
@@ -17,7 +20,7 @@ Route::get('/post', function () {
 });
 
 Route::get('/author/{user}', function (User $user) {
-    return view('posts', ['title' => 'Post by '.$user->name, 'posts' => $user->post]);
+    return view('posts', ['title' => 'Post by '.$user->name, 'posts' => $user->posts]);
 });
 
 Route::get('/post/{post:slug}', function (Post $post) {
@@ -25,7 +28,7 @@ Route::get('/post/{post:slug}', function (Post $post) {
 });
 
 Route::get('/category/{category:slug}', function (Category $category) {
-    return view('posts', ['title' => $category->name.' Post', 'posts' => $category->post]);
+    return view('posts', ['title' => $category->name.' Post', 'posts' => $category->posts]);
 });
 
 Route::get('/about', function () {
@@ -36,10 +39,3 @@ Route::get('/contact', function () {
     return view('contact', ['title' => 'Contact']);
 });
 
-Route::get('/test/{user}', function (Request $request, User $user) {
-
-        dd([$request->session()->all(),
-        new Illuminate\Http\Response(),
-        $user
-        ]);
-});
