@@ -15,26 +15,8 @@ Route::get('/', function () {
     return view('home', ['title' => 'Home page']);
 });
 
-Route::get('/post', function (Request $request) {
-    $query = Post::query();
-
-    if ($request->input('title')) {
-        $query->where('title', 'LIKE', '%'.$request->input('title').'%');
-    }
-
-    if ($request->input('category')) {
-        $query->whereHas('category', function ($q) use ($request) {
-            return $q->where('slug', 'LIKE', '%'.$request->input('category').'%');
-        });
-    }
-
-    if ($request->input('author')) {
-        $query->whereHas('author', function ($q) use ($request) {
-            return $q->where('email', 'LIKE', '%'.$request->input('author').'%');
-        });
-    }
-    $posts = $query->get();
-    dump($posts);
+Route::get('/post', function () {
+    $posts = Post::latest()->filter(request(['title', 'author', 'category']))->paginate(5)->withQueryString();
 
     return view('posts', ['title' => 'Post', 'posts' => $posts]);
 });
@@ -58,4 +40,6 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return view('contact', ['title' => 'Contact']);
 });
+
+
 
